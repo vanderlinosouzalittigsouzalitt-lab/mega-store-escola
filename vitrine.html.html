@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mega Store - Loja de Pontos da Escola</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background-color: #f4f7f6;
+      color: #333;
+    }
+    header {
+      background-color: #2c3e50;
+      color: #white;
+      color: #fff;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.3rem;
+    }
+    header p {
+      font-size: 0.95rem;
+      color: #bdc3c7;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .aviso {
+      background-color: #e8f8f5;
+      border-left: 5px solid #27ae60;
+      padding: 1rem;
+      margin-bottom: 2rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      color: #273746;
+    }
+    .grid-produtos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+    .card {
+      background: white;
+      border: 1px solid #e1e8ed;
+      border-radius: 8px;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+    .card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #f1f2f6;
+    }
+    .card h3 {
+      font-size: 1.1rem;
+      margin: 0.8rem 0 0.4rem 0;
+      color: #2c3e50;
+    }
+    .card .descricao {
+      font-size: 0.85rem;
+      color: #7f8c8d;
+      margin-bottom: 1rem;
+      flex-grow: 1;
+    }
+    .badge-pontos {
+      background-color: #e67e22;
+      color: white;
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .sem-produtos {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 3rem;
+      color: #7f8c8d;
+      font-size: 1.1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🎒 Mega Store Escolar</h1>
+    <p>Escolha seu prêmio em casa junto com sua família e troque na escola usando seus pontos!</p>
+  </header>
+
+  <div class="container">
+    <div class="aviso">
+      💡 <strong>Como funciona:</strong> Olhem os produtos e os valores em pontos aqui no site. Quando vierem à escola, verifiquem seu saldo com a diretora/professor e façam a troca!
+    </div>
+
+    <h2>Prêmios Disponíveis</h2>
+    <div id="vitrine" class="grid-produtos" style="margin-top: 1rem;">
+      <!-- Os produtos cadastrados aparecem aqui automaticamente -->
+    </div>
+  </div>
+
+  <script>
+    // Carregar produtos salvos ou usar lista padrão vazia
+    function carregarVitrine() {
+      const produtosSalvos = localStorage.getItem('mega_store_produtos');
+      let produtos = produtosSalvos ? JSON.parse(produtosSalvos) : [
+        { id: 1, nome: "Livro Turma da Mônica", pontos: 10, descricao: "Edição especial de historinhas em quadrinhos.", imagem: "https://via.placeholder.com/220x140?text=Livro+Monica" },
+        { id: 2, nome: "Caixa de Lápis de Cor (12 cores)", pontos: 15, descricao: "Lápis de cor de ótima qualidade para as atividades.", imagem: "https://via.placeholder.com/220x140?text=Lapis+de+Cor" },
+        { id: 3, nome: "Jogo de Canetinhas", pontos: 20, descricao: "Canetinhas hidrográficas coloridas.", imagem: "https://via.placeholder.com/220x140?text=Canetinhas" }
+      ];
+
+      const container = document.getElementById('vitrine');
+      container.innerHTML = '';
+
+      if (produtos.length === 0) {
+        container.innerHTML = '<div class="sem-produtos">Nenhum produto cadastrado no momento. Volte em breve!</div>';
+        return;
+      }
+
+      produtos.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div>
+            <img src="${p.imagem}" alt="${p.nome}" onerror="this.src='https://via.placeholder.com/220x140?text=Mega+Store'">
+            <h3>${p.nome}</h3>
+            <p class="descricao">${p.descricao || 'Sem descrição.'}</p>
+          </div>
+          <div class="badge-pontos">⭐ ${p.pontos} Pontos</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Atualiza automaticamente caso a diretora altere algo no painel admin na mesma máquina
+    window.addEventListener('storage', (e) => {
+      if (e.key === 'mega_store_produtos') {
+        carregarVitrine();
+      }
+    });
+
+    carregarVitrine();
+  </script>
+</body>
+</html>
